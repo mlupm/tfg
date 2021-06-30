@@ -1,6 +1,7 @@
 package com.upm.newsserver.api;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -24,20 +25,19 @@ public class NewsApi {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response addArticle(New news) {
+		if (news == null)
+			return Response.status(400).entity("The New object is missing or malformed").build();
 		return newsService.addArticle(news);
 	}
 	
 	@GET
 	@Path("/{title}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public New getArticle(@PathParam("title") String title) {
-		return newsService.getArticle(title);
-	}
-	
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getArticles() {
-		return newsService.getArticles();
+	public Response getArticle(@PathParam("title") String title) {
+		New result_new = newsService.getArticle(title);
+		if (result_new != null)
+			return Response.status(200).entity(result_new).build();
+		return Response.status(404).build();
 	}
 	
 	@POST
@@ -45,6 +45,19 @@ public class NewsApi {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response createUser(User user) {
 		return newsService.createUser(user);
+	}
+	
+	@POST
+	@Path("/users/login")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response login(User user) {
+		return newsService.login(user);
+	}
+	
+	@DELETE
+	@Path("/users/logout/{username}")
+	public Response logout(@PathParam("username") String username) {
+		return newsService.logout(username);
 	}
 	
 }

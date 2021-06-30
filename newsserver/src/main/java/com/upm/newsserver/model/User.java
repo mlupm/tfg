@@ -2,6 +2,7 @@ package com.upm.newsserver.model;
 
 public class User {
 
+	
 	private String username;
 	private String password;
 	
